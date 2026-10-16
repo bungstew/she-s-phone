@@ -2,75 +2,92 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>휴대폰 엿보기</title>
 <style>
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: Arial, "Malgun Gothic", sans-serif;
   color: white;
   background: #09090c;
 }
-button { font: inherit; cursor: pointer; }
+
+button, input, textarea {
+  font: inherit;
+}
+
+button { cursor: pointer; }
+
 .phone {
   min-height: 100dvh;
-  padding: 22px 20px 105px;
-  position: relative;
-  overflow: hidden;
+  padding: 18px 20px 130px;
   background:
     radial-gradient(ellipse at 30% 35%, #292a30 0%, transparent 50%),
     linear-gradient(145deg, #202126, #08080b 75%);
 }
+
 .status {
   display: flex;
   justify-content: space-between;
   padding: 6px 15px 22px;
   font-size: 15px;
 }
-.status span:last-child { letter-spacing: 2px; }
+
 .back {
   border: 0;
   border-radius: 30px;
   color: #ddd;
   background: #48494f;
-  padding: 7px 14px;
-  margin-bottom: 18px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
   font-size: 13px;
 }
+
 .widget {
   width: 100%;
   min-height: 220px;
   border: 0;
   border-radius: 32px;
-  padding: 24px;
+  padding: 22px;
   color: white;
   background: rgba(105,105,112,.55);
   display: flex;
   text-align: left;
-  gap: 22px;
+  gap: 15px;
   align-items: center;
 }
-.date { min-width: 92px; }
+
+.date { min-width: 78px; }
 .day { color: #ff777d; font-weight: bold; font-size: 15px; }
-.bigday { font-size: 65px; font-weight: 300; line-height: 1.1; }
-.month { font-size: 17px; }
+.bigday { font-size: 62px; font-weight: 300; line-height: 1.1; }
+.month { font-size: 16px; }
+
 .events { flex: 1; min-width: 0; }
 .event {
   border-left: 5px solid #36c77c;
-  padding-left: 10px;
+  padding-left: 9px;
   margin: 12px 0;
-  font-size: 14px;
+  font-size: 12px;
   color: #ddd;
+  overflow-wrap: anywhere;
 }
 .event.blue { border-color: #168bff; }
-.event strong { display: block; font-size: 15px; color: white; }
+.event strong {
+  display: block;
+  font-size: 14px;
+  color: white;
+  margin-bottom: 3px;
+}
+
 .apps {
   display: grid;
   grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 30px 12px;
-  margin: 40px 4px 0;
+  gap: 28px 10px;
+  margin: 40px 3px 0;
 }
+
 .app {
   position: relative;
   display: flex;
@@ -83,6 +100,7 @@ button { font: inherit; cursor: pointer; }
   background: transparent;
   min-width: 0;
 }
+
 .iconbox {
   width: min(100%, 88px);
   aspect-ratio: 1;
@@ -90,11 +108,13 @@ button { font: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 43px;
+  font-size: 42px;
   box-shadow: 0 3px 8px #0004;
   overflow: hidden;
 }
-.appname { font-size: 14px; }
+
+.appname { font-size: 13px; }
+
 .mail { background: linear-gradient(#299bff,#0871df); }
 .calendar { background: #fff; color: #161616; }
 .clock { background: #fff; color: #151515; }
@@ -102,6 +122,12 @@ button { font: inherit; cursor: pointer; }
 .memo { background: linear-gradient(#ffdc55 0 30%,#fff 30%); color: #bbb; }
 .photos { background: #fff; }
 .camera { background: linear-gradient(135deg,#eee,#b8b8c0); }
+.contacts-icon { background: #fff; color: #4285e8; }
+.phoneicon { background: linear-gradient(#63ed67,#19bf40); }
+.webicon { background: white; color: #1682dc; }
+.chaticon { background: linear-gradient(#63ed67,#19bf40); }
+.yellow { background: #ffe600; color: #261800; }
+
 .badge {
   position: absolute;
   top: -8px;
@@ -113,12 +139,12 @@ button { font: inherit; cursor: pointer; }
   height: 33px;
   display: grid;
   place-items: center;
-  font-size: 15px;
+  font-size: 14px;
 }
+
 .search {
   display: block;
-  margin:  auto auto 26px;
-  transform: translateY(0);
+  margin: auto;
   border: 0;
   border-radius: 30px;
   padding: 10px 20px;
@@ -126,46 +152,67 @@ button { font: inherit; cursor: pointer; }
   background: #343438;
   font-size: 14px;
 }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.home-space {
+  height: min(44vh, 400px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
 .home-bottom {
   position: fixed;
   z-index: 5;
   bottom: 10px;
   left: 3%;
   width: 94%;
-  min-height: 112px;
-  border-radius: 45px;
-  padding: 20px 16px;
-  background: rgba(52,52,57,.88);
+  min-height: 108px;
+  border-radius: 40px;
+  padding: 17px 14px;
+  background: rgba(52,52,57,.92);
   display: grid;
   grid-template-columns: repeat(4,1fr);
   gap: 10px;
 }
+
 .home-bottom .iconbox {
   width: min(100%, 88px);
   border-radius: 22px;
 }
-.phoneicon { background: linear-gradient(#63ed67,#19bf40); }
-.webicon { background: white; color: #1682dc; }
-.chaticon { background: linear-gradient(#63ed67,#19bf40); }
-.yellow { background: #ffe600; color: #261800; }
-.screen { display: none; min-height: 75vh; }
-.screen.active { display: block; }
+
 .page-title {
-  font-size: 30px;
-  margin: 20px 0;
+  font-size: 28px;
+  margin: 18px 0;
 }
+
 .panel {
   background: #24252b;
   border-radius: 20px;
-  padding: 18px;
+  padding: 16px;
   margin: 14px 0;
 }
+
+.listitem {
+  border-bottom: 1px solid #44454b;
+  padding: 14px 4px;
+}
+
+.smallnote {
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
 .monthrow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 }
+
 .monthrow button {
   background: #393a41;
   border: 0;
@@ -173,39 +220,148 @@ button { font: inherit; cursor: pointer; }
   padding: 10px 15px;
   color: white;
 }
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7,1fr);
-  gap: 5px;
+  gap: 4px;
   text-align: center;
 }
+
 .calendar-grid div {
-  padding: 11px 0;
-  font-size: 14px;
+  padding: 10px 0;
+  font-size: 13px;
 }
+
 .calendar-grid .weekday { color: #aaa; }
+
 .calendar-grid .today {
   border-radius: 50%;
   background: #168bff;
 }
-.listitem {
-  border-bottom: 1px solid #44454b;
-  padding: 15px 0;
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  text-align: left;
+  color: white;
+  background: transparent;
+  border: 0;
+  padding: 12px 3px;
 }
-.smallnote { color: #aaa; font-size: 13px; }
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #4a7ee8;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.message-thread {
+  min-height: 42vh;
+  max-height: 55vh;
+  overflow-y: auto;
+  background: #17181d;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.message-row {
+  display: flex;
+  margin: 12px 0;
+}
+
+.message-row.mine { justify-content: flex-end; }
+
+.bubble {
+  max-width: 84%;
+  padding: 11px 14px;
+  border-radius: 17px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.mine .bubble {
+  background: #168bff;
+  color: white;
+}
+
+.theirs .bubble {
+  background: #414249;
+  color: white;
+}
+
+.message-time {
+  font-size: 10px;
+  opacity: .7;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.composer input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  border-radius: 22px;
+  padding: 13px 15px;
+  color: white;
+  background: #35363d;
+  outline: none;
+}
+
+.send {
+  border: 0;
+  border-radius: 22px;
+  padding: 0 17px;
+  color: white;
+  background: #168bff;
+}
+
+.action-button {
+  border: 0;
+  border-radius: 15px;
+  padding: 12px 15px;
+  color: white;
+  background: #3c3d45;
+  margin-top: 10px;
+}
+
+@media (max-width: 360px) {
+  .phone { padding-left: 14px; padding-right: 14px; }
+  .widget { padding: 16px; gap: 10px; }
+  .date { min-width: 66px; }
+  .bigday { font-size: 54px; }
+  .event { font-size: 11px; }
+  .event strong { font-size: 12px; }
+  .iconbox { border-radius: 18px; }
+}
 </style>
 </head>
+
 <body>
 <div class="phone">
   <div class="status">
-    <span id="time">11:59</span>
+    <span id="statusTime">12:00</span>
     <span>▮▮▮ ◉ ▰</span>
   </div>
 
   <main id="home" class="screen active">
     <button class="back" onclick="showHome()">〈 본문으로</button>
 
-    <button class="widget" onclick="openApp('calendar')" aria-label="달력 열기">
+    <button class="widget" onclick="openApp('calendar')">
       <div class="date">
         <div class="day" id="weekday">일요일</div>
         <div class="bigday" id="daynum">18</div>
@@ -229,43 +385,54 @@ button { font: inherit; cursor: pointer; }
         <span class="appname">메일</span>
         <span class="badge">2</span>
       </button>
+
       <button class="app" onclick="openApp('calendar')">
         <span class="iconbox calendar" style="flex-direction:column">
-          <small style="color:#e35d65;font-size:12px">일요일</small>
+          <small style="color:#e35d65;font-size:11px">오늘</small>
           <span style="font-size:38px" id="calIconDay">18</span>
         </span>
         <span class="appname">캘린더</span>
       </button>
+
       <button class="app" onclick="openApp('clock')">
         <span class="iconbox clock">🕒</span>
         <span class="appname">시계</span>
       </button>
+
       <button class="app" onclick="openApp('weather')">
         <span class="iconbox weather">🌤️</span>
         <span class="appname">날씨</span>
       </button>
+
       <button class="app" onclick="openApp('memo')">
         <span class="iconbox memo">▤</span>
         <span class="appname">메모</span>
       </button>
+
       <button class="app" onclick="openApp('photos')">
         <span class="iconbox photos">🏞️</span>
         <span class="appname">사진</span>
       </button>
+
       <button class="app" onclick="openApp('camera')">
         <span class="iconbox camera">📷</span>
         <span class="appname">카메라</span>
       </button>
+
+      <button class="app" onclick="openApp('contacts')">
+        <span class="iconbox contacts-icon">👤</span>
+        <span class="appname">연락처</span>
+      </button>
     </div>
 
-    <div style="height: min(48vh, 430px); display:flex;align-items:flex-end;justify-content:center">
+    <div class="home-space">
       <button class="search" onclick="openApp('search')">⌕ 검색</button>
     </div>
   </main>
 
   <main id="detail" class="screen">
     <button class="back" onclick="showHome()">〈 홈 화면</button>
-    <h1 class="page-title" id="pageTitle">캘린더</h1>
+    <h1 class="page-title" id="pageTitle">앱</h1>
     <div id="pageContent"></div>
   </main>
 </div>
@@ -275,13 +442,17 @@ button { font: inherit; cursor: pointer; }
     <span class="iconbox phoneicon">☎</span>
     <span class="badge">8</span>
   </button>
+
   <button class="app" onclick="openApp('internet')">
     <span class="iconbox webicon">🌐</span>
   </button>
+
   <button class="app" onclick="openApp('messages')">
     <span class="iconbox chaticon">●</span>
-    <span class="badge">3</span>
+    <span class="appname">문자</span>
+    <span class="badge" id="messageBadge" style="display:none">1</span>
   </button>
+
   <button class="app" onclick="openApp('chat')">
     <span class="iconbox yellow">•••</span>
     <span class="badge">12</span>
@@ -290,11 +461,35 @@ button { font: inherit; cursor: pointer; }
 
 <script>
 const titles = {
-  calendar:'캘린더', mail:'메일', clock:'시계', weather:'날씨',
-  memo:'메모', photos:'사진', camera:'카메라',
-  phone:'전화', internet:'인터넷', messages:'메시지',
-  chat:'채팅', search:'검색'
+  calendar: '캘린더',
+  mail: '메일',
+  clock: '시계',
+  weather: '날씨',
+  memo: '메모',
+  photos: '사진',
+  camera: '카메라',
+  contacts: '연락처',
+  messages: '문자',
+  chat: '채팅',
+  phone: '전화',
+  internet: '인터넷',
+  search: '검색'
 };
+
+/* 연락처는 AAA 한 명만 등록 */
+const contact = {
+  name: 'AAA',
+  number: '010-0000-0000'
+};
+
+/* 가상 대화 기록 */
+const conversations = {
+  AAA: []
+};
+
+let currentChat = '';
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
 
 function showHome() {
   document.getElementById('home').classList.add('active');
@@ -302,6 +497,16 @@ function showHome() {
 }
 
 function openApp(app) {
+  if (app === 'messages') {
+    renderConversationList();
+    return;
+  }
+
+  if (app === 'contacts') {
+    renderContacts();
+    return;
+  }
+
   document.getElementById('home').classList.remove('active');
   document.getElementById('detail').classList.add('active');
   document.getElementById('pageTitle').textContent = titles[app] || app;
@@ -320,125 +525,328 @@ function openApp(app) {
       </div>
       <div class="panel">
         <strong>예정된 일정</strong>
-        <div class="listitem">🟢 데이트 <div class="smallnote">12:00</div></div>
-        <div class="listitem">🔵 의뢰인 미팅 - 대성물산 법무팀
-          <div class="smallnote">10/19 10:00 · 사무실 3층 회의실</div>
+        <div class="listitem">🟢 데이트
+          <div class="smallnote">12:00</div>
         </div>
-        <button class="back" onclick="addEvent()">＋ 일정 추가</button>
-        <div id="newEvent"></div>
+        <div class="listitem">🔵 의뢰인 미팅 - 대성물산 법무팀
+          <div class="smallnote">10:00 · 사무실 3층 회의실</div>
+        </div>
       </div>`;
     renderCalendar();
+
   } else if (app === 'mail') {
-    content.innerHTML = `<div class="panel">
-      <div class="listitem">📩 확인하지 않은 메일 (2)</div>
-      <div class="listitem">업무 관련 안내 <div class="smallnote">오늘 10:30</div></div>
-      <div class="listitem">새로운 메일이 도착했습니다. <div class="smallnote">어제</div></div>
-    </div>`;
+    content.innerHTML = `
+      <div class="panel">
+        <div class="listitem">📩 확인하지 않은 메일 (2)</div>
+        <div class="listitem">업무 관련 안내</div>
+        <div class="listitem">새로운 메일이 도착했습니다.</div>
+      </div>`;
+
   } else if (app === 'memo') {
-    content.innerHTML = `<div class="panel">
-      <textarea id="memoText" placeholder="메모를 입력하세요..." style="width:100%;min-height:180px;background:#303138;color:white;border:0;padding:12px;border-radius:12px"></textarea>
-      <p class="smallnote">이 메모는 현재 화면에서 작성하는 예시입니다.</p>
-    </div>`;
+    content.innerHTML = `
+      <div class="panel">
+        <textarea placeholder="메모를 입력하세요"
+          style="width:100%;min-height:180px;background:#303138;color:white;border:0;padding:12px;border-radius:12px"></textarea>
+      </div>`;
+
   } else if (app === 'clock') {
-    content.innerHTML = `<div class="panel" style="text-align:center;padding:50px 10px">
-      <div style="font-size:45px" id="liveClock">12:00:00</div>
-      <p>시계</p>
-    </div>`;
+    content.innerHTML = `
+      <div class="panel" style="text-align:center;padding:45px 10px">
+        <div style="font-size:42px" id="liveClock"></div>
+        <p>시계</p>
+      </div>`;
     updateClock();
+
   } else if (app === 'weather') {
-    content.innerHTML = `<div class="panel" style="text-align:center;padding:40px">
-      <div style="font-size:65px">🌤️</div><h2>날씨</h2>
-      <p>날씨 정보 화면</p><div class="smallnote">실시간 날씨는 연결되어 있지 않습니다.</div>
-    </div>`;
+    content.innerHTML = `
+      <div class="panel" style="text-align:center;padding:40px">
+        <div style="font-size:65px">🌤️</div>
+        <h2>날씨</h2>
+        <p>날씨 정보 화면</p>
+        <div class="smallnote">실시간 날씨는 연결되어 있지 않습니다.</div>
+      </div>`;
+
   } else if (app === 'photos') {
     content.innerHTML = `<div class="panel">사진이 아직 없습니다.</div>`;
+
   } else if (app === 'camera') {
-    content.innerHTML = `<div class="panel">카메라 앱 화면</div>`;
+    content.innerHTML = `<div class="panel">카메라 앱 모의 화면</div>`;
+
   } else if (app === 'phone') {
-    content.innerHTML = `<div class="panel">최근 통화<div class="listitem">연락처</div><div class="listitem">통화 기록</div></div>`;
+    content.innerHTML = `
+      <div class="panel">
+        <div class="listitem">최근 통화</div>
+        <div class="listitem">연락처: AAA</div>
+        <button class="action-button" onclick="openConversation('AAA')">AAA에게 문자 보내기</button>
+      </div>`;
+
   } else if (app === 'internet') {
-    content.innerHTML = `<div class="panel"><input id="webAddress" placeholder="검색어 또는 주소" style="width:100%;padding:14px;border-radius:12px;border:0"><button class="back" onclick="fakeSearch()">검색</button><div id="webResult"></div></div>`;
-  } else if (app === 'messages' || app === 'chat') {
-    content.innerHTML = `<div class="panel"><div class="listitem">대화 목록</div><input id="chatInput" placeholder="메시지 입력..." style="width:100%;padding:12px;border-radius:12px;border:0"><button class="back" onclick="sendMessage()">보내기</button><div id="chatResult"></div><p class="smallnote">화면을 보여주기 위한 모의 채팅입니다.</p></div>`;
+    content.innerHTML = `
+      <div class="panel">
+        <input id="webAddress" placeholder="검색어 또는 주소"
+          style="width:100%;padding:14px;border-radius:12px;border:0">
+        <button class="action-button" onclick="fakeSearch()">검색</button>
+        <div id="webResult"></div>
+      </div>`;
+
+  } else if (app === 'chat') {
+    content.innerHTML = `
+      <div class="panel">
+        <p>가상 채팅</p>
+        <button class="action-button" onclick="openConversation('AAA')">AAA와 대화하기</button>
+      </div>`;
+
   } else {
-    content.innerHTML = `<div class="panel"><input placeholder="검색어를 입력하세요" style="width:100%;padding:12px;border-radius:12px;border:0"></div>`;
+    content.innerHTML = `
+      <div class="panel">
+        <input placeholder="검색어를 입력하세요"
+          style="width:100%;padding:12px;border-radius:12px;border:0">
+      </div>`;
   }
 }
 
-let viewYear = 2026;
-let viewMonth = 9;
+/* 연락처 앱 */
+function renderContacts() {
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('detail').classList.add('active');
+  document.getElementById('pageTitle').textContent = '연락처';
 
+  document.getElementById('pageContent').innerHTML = `
+    <div class="panel">
+      <div class="smallnote">연락처 1개</div>
+      <button class="contact-row" onclick="openConversation('AAA')">
+        <span class="avatar">👤</span>
+        <span>
+          <strong>AAA</strong>
+          <div class="smallnote">${contact.number}</div>
+        </span>
+      </button>
+      <button class="action-button" onclick="openConversation('AAA')">
+        문자 보내기
+      </button>
+    </div>`;
+}
+
+/* 문자 목록 */
+function renderConversationList() {
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('detail').classList.add('active');
+  document.getElementById('pageTitle').textContent = '문자';
+
+  const msgs = conversations.AAA;
+  const lastMessage = msgs.length
+    ? escapeHTML(msgs[msgs.length - 1].text)
+    : '대화를 시작해 보세요';
+
+  document.getElementById('pageContent').innerHTML = `
+    <div class="panel">
+      <button class="contact-row" onclick="openConversation('AAA')">
+        <span class="avatar">👤</span>
+        <span style="min-width:0;overflow-wrap:anywhere">
+          <strong>AAA</strong>
+          <div class="smallnote">${lastMessage}</div>
+        </span>
+      </button>
+      <button class="action-button" onclick="openConversation('AAA')">
+        ＋ 새 메시지
+      </button>
+    </div>`;
+}
+
+/* 특정 상대와 대화 열기 */
+function openConversation(name) {
+  currentChat = name;
+
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('detail').classList.add('active');
+  document.getElementById('pageTitle').textContent = name;
+
+  document.getElementById('pageContent').innerHTML = `
+    <button class="back" onclick="openApp('messages')">〈 문자 목록</button>
+    <div class="panel" style="padding:10px">
+      <div class="contact-row">
+        <span class="avatar">👤</span>
+        <span>
+          <strong>${name}</strong>
+          <div class="smallnote">${contact.number}</div>
+        </span>
+      </div>
+    </div>
+    <div class="message-thread" id="messageThread"></div>
+    <div class="composer">
+      <input id="messageInput" type="text" maxlength="1000"
+        placeholder="메시지 입력..." autocomplete="off">
+      <button class="send" onclick="sendMessage()">전송</button>
+    </div>`;
+
+  renderMessages();
+
+  document.getElementById('messageInput').addEventListener('keydown', event => {
+    if (event.key === 'Enter') sendMessage();
+  });
+}
+
+/* HTML에 안전하게 표시 */
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[char]);
+}
+
+/* 대화 내용 표시 */
+function renderMessages() {
+  const thread = document.getElementById('messageThread');
+  if (!thread || !currentChat) return;
+
+  const msgs = conversations[currentChat];
+
+  if (!msgs.length) {
+    thread.innerHTML = `
+      <p class="smallnote" style="text-align:center;margin-top:35px">
+        AAA와의 대화가 아직 없습니다.
+      </p>`;
+    return;
+  }
+
+  thread.innerHTML = msgs.map(message => `
+    <div class="message-row ${message.from === '나' ? 'mine' : 'theirs'}">
+      <div class="bubble">
+        ${escapeHTML(message.text)}
+        <div class="message-time">${escapeHTML(message.time)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  thread.scrollTop = thread.scrollHeight;
+}
+
+/* 가상 메시지 전송 */
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  if (!input || !currentChat) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  conversations[currentChat].push({
+    from: '나',
+    text: text,
+    time: new Date().toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  });
+
+  input.value = '';
+  renderMessages();
+}
+
+/* 달력 */
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
   if (!grid) return;
-  const heading = document.getElementById('monthHeading');
-  heading.textContent = `${viewYear}년 ${viewMonth + 1}월`;
+
+  document.getElementById('monthHeading').textContent =
+    `${viewYear}년 ${viewMonth + 1}월`;
+
   grid.innerHTML = '';
-  ['일','월','화','수','목','금','토'].forEach(d => {
+
+  ['일','월','화','수','목','금','토'].forEach(day => {
     const el = document.createElement('div');
     el.className = 'weekday';
-    el.textContent = d;
+    el.textContent = day;
     grid.appendChild(el);
   });
+
   const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const total = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+
   for (let i = 0; i < firstDay; i++) {
     grid.appendChild(document.createElement('div'));
   }
-  for (let day = 1; day <= total; day++) {
+
+  for (let day = 1; day <= totalDays; day++) {
     const el = document.createElement('div');
     el.textContent = day;
-    if (day === 18 && viewMonth === 9 && viewYear === 2026) el.className = 'today';
-    el.onclick = () => {
-      document.querySelectorAll('.calendar-grid .today').forEach(n => n.classList.remove('today'));
-      el.classList.add('today');
-    };
+
+    const today = new Date();
+    if (
+      day === today.getDate() &&
+      viewMonth === today.getMonth() &&
+      viewYear === today.getFullYear()
+    ) {
+      el.className = 'today';
+    }
+
     grid.appendChild(el);
   }
 }
 
 function changeMonth(delta) {
   viewMonth += delta;
-  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+
+  if (viewMonth < 0) {
+    viewMonth = 11;
+    viewYear--;
+  }
+
+  if (viewMonth > 11) {
+    viewMonth = 0;
+    viewYear++;
+  }
+
   renderCalendar();
 }
 
-function addEvent() {
-  const name = prompt('추가할 일정 이름을 입력하세요.');
-  if (name) document.getElementById('newEvent').textContent = '🟢 ' + name;
-}
-
+/* 가상 인터넷 검색 */
 function fakeSearch() {
-  const value = document.getElementById('webAddress').value;
-  document.getElementById('webResult').textContent = value ? '검색 화면: ' + value : '검색어를 입력하세요.';
+  const value = document.getElementById('webAddress').value.trim();
+  document.getElementById('webResult').textContent =
+    value ? '가상 검색: ' + value : '검색어를 입력하세요.';
 }
 
-function sendMessage() {
-  const input = document.getElementById('chatInput');
-  if (!input.value.trim()) return;
-  document.getElementById('chatResult').textContent = '나: ' + input.value;
-  input.value = '';
-}
-
+/* 시계 */
 function updateClock() {
-  const el = document.getElementById('liveClock');
-  if (el) el.textContent = new Date().toLocaleTimeString('ko-KR', {hour12:false});
+  const now = new Date();
+  const time = now.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  const status = document.getElementById('statusTime');
+  if (status) status.textContent = time;
+
+  const clock = document.getElementById('liveClock');
+  if (clock) {
+    clock.textContent = now.toLocaleTimeString('ko-KR', {
+      hour12: false
+    });
+  }
 }
 
+/* 상단 날짜 표시 */
 function updateDate() {
   const now = new Date();
-  const days = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
-  document.getElementById('time').textContent =
-    now.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',hour12:false});
-  document.getElementById('weekday').textContent = days[now.getDay()];
+  const weekdays = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+  const shortDays = ['일','월','화','수','목','금','토'];
+
+  document.getElementById('weekday').textContent = weekdays[now.getDay()];
   document.getElementById('daynum').textContent = now.getDate();
-  document.getElementById('monthnum').textContent = (now.getMonth()+1) + '월';
+  document.getElementById('monthnum').textContent =
+    (now.getMonth() + 1) + '월';
   document.getElementById('calIconDay').textContent = now.getDate();
+
   document.getElementById('dateEvent').textContent =
-    `${now.getMonth()+1}/${now.getDate()} (${['일','월','화','수','목','금','토'][now.getDay()]}) 12:00`;
+    `${now.getMonth()+1}/${now.getDate()} (${shortDays[now.getDay()]}) 12:00`;
 }
+
 updateDate();
+updateClock();
 setInterval(updateDate, 30000);
 setInterval(updateClock, 1000);
 </script>
